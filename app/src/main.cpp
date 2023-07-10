@@ -8,9 +8,13 @@
 #include <zephyr/arch/cpu.h>
 #include <zephyr/sys/printk.h>
 
+extern "C" int client_main(void);
+
 int main(void)
 {
-	printk("Hello World! %s\n", CONFIG_BOARD);
+	// printk("Hello World! %s\n", CONFIG_BOARD);
+
+	// return client_main();
 
 	return 0;
 }

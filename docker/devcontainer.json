@@ -16,8 +16,8 @@
 	],
 	"runArgs": [
 		"-i",
-		// "--device=/dev/ttyACM0",
-		// "--device=/dev/ttyUSB0",
+		"--device=/dev/ttyACM0",
+		"--device=/dev/ttyS0",
 		"--privileged"
 	],
 	"remoteUser": "user",

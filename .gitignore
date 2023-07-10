@@ -1,6 +1,6 @@
-*
-!.gitignore
-!init.sh
-!oci-build.sh
-!/app/*
-!/docker/*
+/.west/
+/bootloader/
+/build/
+/modules/
+/tools/
+/zephyr/

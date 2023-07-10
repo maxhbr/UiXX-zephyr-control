@@ -55,7 +55,8 @@ main() {
         build \
         -s "$path" \
         -p always \
-        -d ./build
+        -d ./build \
+        --sysbuild
 }
 
 main $@
