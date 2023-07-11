@@ -40,7 +40,6 @@ main() {
     local repo="$( cd -- "$( dirname -- "$(readlink -f "${BASH_SOURCE[0]}")" )" &> /dev/null && pwd )"
     local context="${repo}/docker"
 
-    # local path="$(cat "${repo}/west.yml" | yq -r '.manifest.self.path')"
     path=app
     local tag="maxhbr/${path}-zephyrbuilder"
 

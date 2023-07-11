@@ -1,6 +1,6 @@
 /.west/
 /bootloader/
-/build/
+build/
 /modules/
 /tools/
 /zephyr/
