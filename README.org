@@ -1,23 +1,19 @@
-* A template for Zephyr projects with devcontainer support
+* POC for cnotroling an Ui24R or Ui16 via MCU in Wif
 
-#+BEGIN_COMMENT
-** TODO change project name in:
-*** TODO _CMakeLists.txt_ in project
-*** TODO _west.yml_ in manifest.self.path
-** TODO change Zephyr versions in
-*** TODO _west.yml_ 
-*** TODO _.github/workflows/build.yaml_
-*** TODO _.devcontainer/Dockerfile_
-** TODO change BOARD in _.dev_
-** TODO if necessary change _/dev/bus/usb_ mount to _/dev_
-#+END_COMMENT
+this as based on: https://www.sequencer.de/synthesizer/threads/soundcraft-ui24r-vs-presonus-studiolive-iii-16r.148147/#post-1922119 :
 
-** Usage
-#+BEGIN_SRC bash
-$ west build -p always -t flash -b nucleo_wb55rg .
+#+BEGIN_SRC python
+# pip install websocket-client
+from websocket import create_connection
+ws = create_connection("ws://<deine-mixer-ip>/socket.io/1/websocket")
+ws.send("3:::SETD^i.0.mute^1")
+ws.send("3:::SETD^i.0.mix^0.5")
+result =  ws.recv()
+print("Received '%s'" % result)
+ws.close()
 #+END_SRC
-or build a sample
-#+BEGIN_SRC bash
-$ west build -p always -t flash -b nucleo_wb55rg zephyr/samples/philosophers/
-$ minicom -D /dev/ttyACM0
-#+END_SRC
+
+the code is based on the sample https://docs.zephyrproject.org/latest/samples/net/sockets/websocket_client/README.html
+
+** running a local websocket server
+
