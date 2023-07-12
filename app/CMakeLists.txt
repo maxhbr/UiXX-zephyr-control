@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
-set(BOARD stamp_c3) # set(BOARD xiao_ble)
-# set(SHIELD adafruit_2_8_tft_touch_v2)
+set(BOARD stamp_c3)
+# set(BOARD esp32c3_devkitm)
  
 set(CMAKE_C_FLAGS -lstdc++)
 set(CMAKE_CXX_FLAGS -lstdc++)

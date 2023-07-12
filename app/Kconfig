@@ -1,0 +1,13 @@
+config NET_CONFIG_SSID
+    string "SSID"
+    default "SSID"
+    help
+      set the SSID
+
+config NET_CONFIG_PSK
+    string "PSK"
+    default "PSK"
+    help
+      set the PSK
+
+source "Kconfig.zephyr"
