@@ -1,0 +1,3 @@
+[submodule "craigpeacock-Zephyr_WiFi"]
+	path = craigpeacock-Zephyr_WiFi
+	url = https://github.com/craigpeacock/Zephyr_WiFi
