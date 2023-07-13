@@ -8,38 +8,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include "wifi.h"
 #include <zephyr/logging/log.h>
-LOG_MODULE_REGISTER(app, LOG_LEVEL_DBG);
-
-#include <errno.h>
-#include <zephyr/kernel.h>
-#include <zephyr/drivers/led_strip.h>
-#include <zephyr/net/net_event.h>
-#include <zephyr/net/net_if.h>
-#include <zephyr/net/net_ip.h>
-#include <zephyr/net/socket.h>
-#include <zephyr/net/websocket.h>
-#include <zephyr/net/wifi_mgmt.h>
-#include <zephyr/random/rand32.h>
-#include <zephyr/shell/shell.h>
-
-#if defined(CONFIG_NET_CONFIG_SSID)
-#define SSID CONFIG_NET_CONFIG_SSID
-#else
-#define SSID "SSID"
-#endif
-
-#if defined(CONFIG_NET_CONFIG_PSK)
-#define PSK CONFIG_NET_CONFIG_PSK
-#else
-#define PSK "PSK"
-#endif
-
-static K_SEM_DEFINE(wifi_connected, 0, 1);
-static K_SEM_DEFINE(ipv4_address_obtained, 0, 1);
-
-static struct net_mgmt_event_callback wifi_cb;
-static struct net_mgmt_event_callback ipv4_cb;
+LOG_MODULE_REGISTER(wifi);
 
 static void handle_wifi_connect_result(struct net_mgmt_event_callback *cb)
 {
@@ -124,16 +95,30 @@ static void wifi_mgmt_event_handler(struct net_mgmt_event_callback *cb, uint32_t
 	}
 }
 
-void wifi_connect(void)
+WIFI::WIFI(const char *_ssid, char *_psk)
+{
+	LOG_MODULE_DECLARE(wifi);
+	ssid = _ssid;
+	psk = _psk;
+
+	net_mgmt_init_event_callback(&wifi_cb, wifi_mgmt_event_handler,
+								 NET_EVENT_WIFI_CONNECT_RESULT | NET_EVENT_WIFI_DISCONNECT_RESULT);
+
+	net_mgmt_init_event_callback(&ipv4_cb, wifi_mgmt_event_handler, NET_EVENT_IPV4_ADDR_ADD);
+
+	net_mgmt_add_event_callback(&wifi_cb);
+	net_mgmt_add_event_callback(&ipv4_cb);
+}
+void WIFI::wifi_connect(void)
 {
 	struct net_if *iface = net_if_get_default();
 
 	struct wifi_connect_req_params wifi_params = {0};
 
-	wifi_params.ssid = SSID;
-	wifi_params.psk = PSK;
-	wifi_params.ssid_length = strlen(SSID);
-	wifi_params.psk_length = strlen(PSK);
+	wifi_params.ssid = reinterpret_cast<const uint8_t *>(ssid);
+	wifi_params.psk = reinterpret_cast<uint8_t *>(psk);
+	wifi_params.ssid_length = strlen(ssid);
+	wifi_params.psk_length = strlen(psk);
 	wifi_params.channel = WIFI_CHANNEL_ANY;
 	wifi_params.security = WIFI_SECURITY_TYPE_PSK;
 	wifi_params.band = WIFI_FREQ_BAND_2_4_GHZ;
@@ -147,7 +132,7 @@ void wifi_connect(void)
 	}
 }
 
-void wifi_status(void)
+void WIFI::wifi_status(void)
 {
 	struct net_if *iface = net_if_get_default();
 
@@ -168,7 +153,7 @@ void wifi_status(void)
 	}
 }
 
-void wifi_disconnect(void)
+void WIFI::wifi_disconnect(void)
 {
 	struct net_if *iface = net_if_get_default();
 
@@ -177,20 +162,9 @@ void wifi_disconnect(void)
 		LOG_ERR("WiFi Disconnection Request Failed\n");
 	}
 }
-
-void main(void)
+void WIFI::connect()
 {
-	int sock;
-
-	LOG_INF("Board: %s\n", CONFIG_BOARD);
-
-	net_mgmt_init_event_callback(&wifi_cb, wifi_mgmt_event_handler,
-								 NET_EVENT_WIFI_CONNECT_RESULT | NET_EVENT_WIFI_DISCONNECT_RESULT);
-
-	net_mgmt_init_event_callback(&ipv4_cb, wifi_mgmt_event_handler, NET_EVENT_IPV4_ADDR_ADD);
-
-	net_mgmt_add_event_callback(&wifi_cb);
-	net_mgmt_add_event_callback(&ipv4_cb);
+	LOG_MODULE_DECLARE(wifi);
 
 #ifdef CONFIG_BOARD_NRF7002DK_NRF5340_CPUAPP
 	// Delay to prevent "Unable to get wpa_s handle for wlan0" on nRF Connect SDK 2.3.0.?

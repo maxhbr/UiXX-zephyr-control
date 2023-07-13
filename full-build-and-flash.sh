@@ -43,7 +43,7 @@ main() {
     local app="${2:-app}"
 
     build "$board" "$app"
-    flash
+    # flash
 }
 
 cd -- "$(dirname "$0")"
