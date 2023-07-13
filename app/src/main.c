@@ -13,6 +13,7 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_DBG);
 
 #include <errno.h>
 #include <zephyr/kernel.h>
+#include <zephyr/drivers/led_strip.h>
 #include <zephyr/net/net_event.h>
 #include <zephyr/net/net_if.h>
 #include <zephyr/net/net_ip.h>
