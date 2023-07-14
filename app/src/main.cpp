@@ -3,12 +3,16 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+#include <zephyr/logging/log.h>
+LOG_MODULE_REGISTER(app, LOG_LEVEL_DBG);
+
 #include <stdio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/arch/cpu.h>
 #include <zephyr/sys/printk.h>
 
 #include "wifi.h"
+#include "status_led.h"
 
 #if defined(CONFIG_NET_CONFIG_SSID)
 #define SSID CONFIG_NET_CONFIG_SSID
@@ -24,12 +28,10 @@
 
 int main(void)
 {
-	printk("Hello World! %s\n", CONFIG_BOARD);
+    LOG_INF("Running on: %s\n", CONFIG_BOARD);
 
     WIFI wifi(SSID, PSK);
     wifi.connect();
 
-
-	return 0;
+    return 0;
 }
-

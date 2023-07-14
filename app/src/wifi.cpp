@@ -12,6 +12,8 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(wifi);
 
+#include <zephyr/sys/reboot.h>
+
 static void handle_wifi_connect_result(struct net_mgmt_event_callback *cb)
 {
 	const struct wifi_status *status = (const struct wifi_status *)cb->info;
@@ -33,7 +35,10 @@ static void handle_wifi_disconnect_result(struct net_mgmt_event_callback *cb)
 
 	if (status->status)
 	{
-		LOG_INF("Disconnection request (%d)\n", status->status);
+		LOG_INF("Disconnection request (%d)", status->status);
+		LOG_INF("Sleeping 10 sec and then reboot");
+		k_sleep(K_SECONDS(10));
+		sys_reboot(SYS_REBOOT_WARM);
 	}
 	else
 	{
