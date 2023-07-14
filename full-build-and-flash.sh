@@ -19,8 +19,9 @@ build() {
             -p auto \
             -b "$board" \
             --sysbuild \
-            "$app" \
-            -- -DCONF_FILE="prj.conf _priv.prj.conf"
+            "$app" 
+            # \
+            # -- -DCONF_FILE="prj.conf _priv.prj.conf"
     # fi
 }
 
@@ -43,7 +44,7 @@ main() {
     local app="${2:-app}"
 
     build "$board" "$app"
-    # flash
+    flash
 }
 
 cd -- "$(dirname "$0")"

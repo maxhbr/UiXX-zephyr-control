@@ -34,9 +34,13 @@ static const struct led_rgb colors[] = {
 class STATUS_LED
 {
     const struct device *strip;
+    int strip_num_pixels;
 
 public:
-    STATUS_LED();
+    STATUS_LED(const struct device *_strip, int _strip_num_pixels);
+    void blue();
+    void red();
+    void green();
 };
 
 #endif // __STATUS_LED_H_

@@ -26,9 +26,17 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_DBG);
 #define PSK "PSK"
 #endif
 
+
+#define STRIP_NODE DT_ALIAS(ledstrip)
+#define STRIP_NUM_PIXELS DT_PROP(DT_ALIAS(ledstrip), chain_length)
+static const struct device *const strip = DEVICE_DT_GET(STRIP_NODE);
+
 int main(void)
 {
     LOG_INF("Running on: %s\n", CONFIG_BOARD);
+
+    STATUS_LED status_led(strip, STRIP_NUM_PIXELS);
+    status_led.blue();
 
     WIFI wifi(SSID, PSK);
     wifi.connect();

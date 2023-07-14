@@ -15,17 +15,31 @@ LOG_MODULE_REGISTER(status_led);
 
 #include "status_led.h"
 
-#define STRIP_NODE DT_ALIAS(led_strip)
-#define STRIP_NUM_PIXELS DT_PROP(DT_ALIAS(led_strip), chain_length)
-
-STATUS_LED::STATUS_LED()
+STATUS_LED::STATUS_LED(const struct device *_strip, int _strip_num_pixels)
 {
-  LOG_MODULE_DECLARE(led);
-  strip = DEVICE_DT_GET(STRIP_NODE);
-	if (device_is_ready(strip)) {
-		LOG_INF("Found LED strip device %s", strip->name);
+  LOG_MODULE_DECLARE(status_led);
+  strip = _strip;
+  strip_num_pixels = _strip_num_pixels;
+  if (device_is_ready(strip))
+  {
+    LOG_INF("Found LED strip device %s", strip->name);
   }
   //   pin = _pin;
   //   dev = device_get_binding(label);
   // static const struct device *const strip = DEVICE_DT_GET(STRIP_NODE);
+}
+
+void STATUS_LED::blue()
+{
+  LOG_MODULE_DECLARE(status_led);
+}
+
+void STATUS_LED::red()
+{
+  LOG_MODULE_DECLARE(status_led);
+}
+
+void STATUS_LED::green()
+{
+  LOG_MODULE_DECLARE(status_led);
 }
