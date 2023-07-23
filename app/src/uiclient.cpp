@@ -117,7 +117,7 @@ int UICLIENT::init_socket(void)
     memset(&req, 0, sizeof(req));
 
     req.host = ip;
-    req.url = "/";
+    req.url = "/socket.io/1/websocket";
     req.optional_headers = extra_headers;
     req.cb = connect_cb;
     req.tmp_buf = temp_recv_buf_ipv4;
