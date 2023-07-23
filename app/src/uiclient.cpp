@@ -8,6 +8,14 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(uiclient, LOG_LEVEL_DBG);
 
+#include <zephyr/kernel.h>
+#include <zephyr/net/net_ip.h>
+#include <zephyr/net/socket.h>
+#include <zephyr/net/tls_credentials.h>
+#include <zephyr/net/websocket.h>
+#include <zephyr/random/rand32.h>
+#include <zephyr/shell/shell.h>
+
 #define MAX_RECV_BUF_LEN 1000 /* TODO */
 static uint8_t recv_buf_ipv4[MAX_RECV_BUF_LEN];
 
