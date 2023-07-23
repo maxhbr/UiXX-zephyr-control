@@ -17,7 +17,6 @@
 #include <zephyr/net/net_if.h>
 #include <zephyr/net/net_ip.h>
 #include <zephyr/net/wifi_mgmt.h>
-#include <zephyr/shell/shell.h>
 
 static K_SEM_DEFINE(wifi_connected, 0, 1);
 static K_SEM_DEFINE(ipv4_address_obtained, 0, 1);
@@ -30,13 +29,11 @@ class WIFI
   const char *ssid;
   char *psk;
 
-  void wifi_connect();
-  void wifi_status();
-  void wifi_disconnect();
-
 public:
   WIFI(const char *_ssid, char *_psk);
   void connect();
+  void status();
+  void disconnect();
 };
 
 #endif // __WIFI_H_

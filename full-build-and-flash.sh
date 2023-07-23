@@ -5,29 +5,30 @@ build() {
     >&2 echo "* build...."
     local board="$1"; shift
     local app="$1"; shift
-    # if [[ ! -d "./build" ]]; then
-    #     west build \
-    #         -p auto \
-    #         -b "$board" \
-    #         --sysbuild \
-    #         "$app" \
-    #         -- -DCONF_FILE="prj.conf _priv.prj.conf"
-        
-    #     build "$board" "$app"
-    # else 
-        west build \
-            -p auto \
-            -b "$board" \
-            --sysbuild \
-            "$app" 
-            # \
-            # -- -DCONF_FILE="prj.conf _priv.prj.conf"
-    # fi
+
+    cmd="west build -p auto -b $board $app"
+
+    case $board in
+    esp32c3_devkitm|stamp_c3) cmd+=" --sysbuild --" ;;
+    nucleo_*) cmd+=" -- -DSHIELD=adafruit_winc1500" ;;
+    lpcxpresso55s69_cpu0) cmd+=" -- -DSHIELD=adafruit_winc1500" ;;
+    *) cmd+=" --" ;;
+    esac
+
+    case $app in
+    app) cmd+=' -DCONF_FILE="prj.conf _priv.prj.conf"'
+    esac
+
+    (set -x; eval "$cmd")
 }
 
 flash() {
     >&2 echo "* flash...."
-    west flash
+    local board="$1"; shift
+    case $board in
+    lpcxpresso55s69_cpu0) west flash --runner jlink ;;
+    *) west flash ;;
+    esac
 }
 
 monitor() {
@@ -44,7 +45,7 @@ main() {
     local app="${2:-app}"
 
     build "$board" "$app"
-    flash
+    flash "$board"
 }
 
 cd -- "$(dirname "$0")"

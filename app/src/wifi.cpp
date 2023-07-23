@@ -114,30 +114,8 @@ WIFI::WIFI(const char *_ssid, char *_psk)
 	net_mgmt_add_event_callback(&wifi_cb);
 	net_mgmt_add_event_callback(&ipv4_cb);
 }
-void WIFI::wifi_connect(void)
-{
-	struct net_if *iface = net_if_get_default();
 
-	struct wifi_connect_req_params wifi_params = {0};
-
-	wifi_params.ssid = reinterpret_cast<const uint8_t *>(ssid);
-	wifi_params.psk = reinterpret_cast<uint8_t *>(psk);
-	wifi_params.ssid_length = strlen(ssid);
-	wifi_params.psk_length = strlen(psk);
-	wifi_params.channel = WIFI_CHANNEL_ANY;
-	wifi_params.security = WIFI_SECURITY_TYPE_PSK;
-	wifi_params.band = WIFI_FREQ_BAND_2_4_GHZ;
-	wifi_params.mfp = WIFI_MFP_OPTIONAL;
-
-	LOG_DBG("Connecting to SSID: %s\n", wifi_params.ssid);
-
-	if (net_mgmt(NET_REQUEST_WIFI_CONNECT, iface, &wifi_params, sizeof(struct wifi_connect_req_params)))
-	{
-		LOG_ERR("WiFi Connection Request Failed\n");
-	}
-}
-
-void WIFI::wifi_status(void)
+void WIFI::status(void)
 {
 	struct net_if *iface = net_if_get_default();
 
@@ -158,7 +136,7 @@ void WIFI::wifi_status(void)
 	}
 }
 
-void WIFI::wifi_disconnect(void)
+void WIFI::disconnect(void)
 {
 	struct net_if *iface = net_if_get_default();
 
@@ -180,9 +158,30 @@ void WIFI::connect()
 	k_sleep(K_SECONDS(1));
 #endif
 
-	wifi_connect();
+	LOG_INF("try to connect to %s\n", ssid);
+
+	struct net_if *iface = net_if_get_default();
+
+	struct wifi_connect_req_params wifi_params = {0};
+
+	wifi_params.ssid = reinterpret_cast<const uint8_t *>(ssid);
+	wifi_params.psk = reinterpret_cast<uint8_t *>(psk);
+	wifi_params.ssid_length = strlen(ssid);
+	wifi_params.psk_length = strlen(psk);
+	wifi_params.channel = WIFI_CHANNEL_ANY;
+	wifi_params.security = WIFI_SECURITY_TYPE_PSK;
+	wifi_params.band = WIFI_FREQ_BAND_2_4_GHZ;
+	wifi_params.mfp = WIFI_MFP_OPTIONAL;
+
+	LOG_DBG("Connecting to SSID: %s\n", wifi_params.ssid);
+
+	if (net_mgmt(NET_REQUEST_WIFI_CONNECT, iface, &wifi_params, sizeof(struct wifi_connect_req_params)))
+	{
+		LOG_ERR("WiFi Connection Request Failed\n");
+	}
+
 	k_sem_take(&wifi_connected, K_FOREVER);
-	wifi_status();
+	status();
 	k_sem_take(&ipv4_address_obtained, K_FOREVER);
 	LOG_INF("Ready...");
 }

@@ -10,18 +10,3 @@
 &wifi {
 	status = "okay";
 };
-
-
-/ {
-	ledstrip: ws2812 {
-		compatible = "worldsemi,ws2812-gpio";
-
-		chain-length = <16>;
-		color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
-		in-gpios = <&gpio0 2 0>;
-	};
-
-	aliases {
-		ledstrip = &ledstrip;
-	};
-};

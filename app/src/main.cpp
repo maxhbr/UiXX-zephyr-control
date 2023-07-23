@@ -12,7 +12,7 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_DBG);
 #include <zephyr/sys/printk.h>
 
 #include "wifi.h"
-#include "status_led.h"
+#include "uiclient.h"
 
 #if defined(CONFIG_NET_CONFIG_SSID)
 #define SSID CONFIG_NET_CONFIG_SSID
@@ -26,20 +26,16 @@ LOG_MODULE_REGISTER(app, LOG_LEVEL_DBG);
 #define PSK "PSK"
 #endif
 
-
-#define STRIP_NODE DT_ALIAS(ledstrip)
-#define STRIP_NUM_PIXELS DT_PROP(DT_ALIAS(ledstrip), chain_length)
-static const struct device *const strip = DEVICE_DT_GET(STRIP_NODE);
-
 int main(void)
 {
-    LOG_INF("Running on: %s\n", CONFIG_BOARD);
+    LOG_INF("Running on: %s", CONFIG_BOARD);
 
-    STATUS_LED status_led(strip, STRIP_NUM_PIXELS);
-    status_led.blue();
-
+    LOG_INF("Step 1, connect to WIFI");
     WIFI wifi(SSID, PSK);
     wifi.connect();
+
+    LOG_INF("Step 2, establish websocket connection");
+    UICLIENT uiclient("192.168.1.205", 9001);
 
     return 0;
 }
